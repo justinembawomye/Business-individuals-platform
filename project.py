@@ -83,6 +83,7 @@ def registerr():
 
 @project.route('/login', methods = ['GET', 'POST'])
 def login():
+    
     if request.method == 'POST':
         username = request.form['username']
         password_candidate = request.form['password']
