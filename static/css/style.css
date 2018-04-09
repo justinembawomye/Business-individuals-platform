@@ -165,3 +165,10 @@ a svg{
 #main {
     transition: margin-left 1s;
 }
+#register{
+    text-align: center;
+    color: #fff;
+}
+#footer{
+    text-align: center;
+}
