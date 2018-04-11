@@ -4,9 +4,15 @@
       <a class="navbar-brand" href="/">Business-Individuals</a>
     </div>
     <ul class="nav navbar-nav">
+      {% if session.logged_in %}
+      <li><a href="/logout">logout</a></li>
+      <li><a href="/dashboard">dashboard</a></li>
+      {% else %}
       <li><a href="/">Home</a></li>
-      <li><a href="/create_account">Register</a></li>
+      <li><a href="/user_register">Register</a></li>
       <li><a href="/login">login</a></li>
+      {% endif %}
+     
     </ul>
     <form class="navbar-form navbar-right" action="/action_page.php">
       <div class="form-group">

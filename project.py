@@ -9,9 +9,11 @@ businesses = ['cakeven', 'yummy', 'S&D center', 'klassy kids store', 'K2 superma
 
 project= Flask(__name__)
 
+if__name__="__main__":
+
 '''if __name__= "__main__":
     project.run() '''
-
+project.secret_key='justine123'
 
 project.config['MYSQL_HOST'] = 'localhost'
 project.config['MYSQL_USER'] = 'root'
@@ -24,7 +26,7 @@ mysql = MySQL(project)
 #home page
 @project.route('/')
 def home():
-    return render_template('home.html', businesses=businesses) 
+    return render_template('home.html', task=task) 
 
 #layout
 @project.route('/layout')
@@ -44,52 +46,98 @@ class Account(Form):
     confirm = PasswordField('confirm password')
 
 
-#create account
-@project.route('/create_account', methods = ['GET', 'POST'])
-def create_account():
+    
+
+#user_register
+@project.route('/user_register', methods=['POST', 'GET'])
+def user_register():
     form = Account(request.form)
-    if request.method == 'POST' and form.validate():
-        '''name = form.name.data()
+
+    if request.method == 'POST'and form.validate():
+        name = form.name.data
+        email = form.email.data
         username = form.username.data
-        email= form.email.data
-        password = sha256_crypt.encrypt(str('password'))'''
-        return render_template('create_account.html')
-        
-         
-    return render_template('create_account.html', form=form)      
+        password = sha256_crypt.encrypt(str(form.password.data))
 
 
 
-
-'''@project.route('/account', methods=["GET", "POST"])
-def registerr():
-    if request.method == "POST":
-        name = request.form.get('name')
-        email = request.form.get('email')
-        username = request.form.get('username')
-        password = request.form.get('password')
-        passwordd = request.form.get('passwordd')
-
-        #create cursor
         cur = mysql.connection.cursor()
+
+
         cur.execute("INSERT INTO users(name, email, username, password) VALUES(%s, %s, %s, %s)", (name, email, username, password))
-        
-        #commit to db
+       
+       
         mysql.connection.commit()
 
-        #close connection
         cur.close()
-        
-        return redirect(url_for('home'))
-    else:
-        return render_template("account.html")'''       
 
-@project.route('/login', methods = ['GET', 'POST'])
+        flash('You are now registered and can login', 'success')
+
+        return redirect(url_for('login'))
+
+    return render_template('user_register.html', form=form)
+
+
+#user login
+@project.route('/login', methods = ['POST', 'GET'])
 def login():
-    
     if request.method == 'POST':
         username = request.form['username']
         password_candidate = request.form['password']
-    return render_template('login.html')
-    
+         #create cursor
 
+        cur = mysql.connection.cursor()
+
+        #get user by username
+        result = cur.execute("SELECT * FROM users WHERE username = %s", [username]) 
+
+        if result > 0:
+            data = cur.fetchone()
+            password = data['password']
+
+
+        #compare passwords
+        if sha256_crypt.verify(password_candidate, password):
+            project.logger.info('Password matched') 
+
+            session['logged_in'] = True
+            session['username'] = username
+
+            flash('You are logged in', 'success')
+
+            return redirect(url_for('dashboard'))
+
+            #close connection
+            cur.close()
+
+
+        else:
+             error = "Invalid login"
+             return render_template('login.html', error=error)  
+    else:
+        error = "Username not found"
+        return render_template('login.html', error=error)       
+
+            
+
+    return render_template('login.html')       
+
+
+#logout
+@project.route('/logout')
+def logout():
+    session.clear()
+    flash('You are now logged out', 'success')
+
+    return redirect(url_for('home'))
+
+
+@project.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
+
+
+
+
+
+    

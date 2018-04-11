@@ -14,16 +14,46 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 
+<style>
+
+    body, html {
+        height: 100%;
+    }
+
+    .bg { 
+        /* The image used */
+        background-image: url("https://mdbootstrap.com/img/Photos/Horizontal/Nature/full page/img(20).jpg");
+
+        /* Full height */
+        height: 100%; 
+
+        /* Center and scale the image nicely */
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+</style>
+
+
 </head>
 <body>
 
 {% include "includes/_navbar.html"%}
+{% include "includes/_messages.html"%}
 {% block body %}
 
 <div class="container pull-right text-center">
     <h1>BootCamp project</h1>
 </div>
 
+
+
+<script src="https://cdn.ckeditor.com/4.9.0/standard/ckeditor.js"></script>
+    <script type="text/javascript">
+    
+    CKEDITOR.replace('editor')
+
+    </script>
 {% endblock %}
 
     
