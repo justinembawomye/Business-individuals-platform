@@ -6,7 +6,7 @@ from functools import wraps
 
 
 
-businesses = ['cakeven', 'yummy', 'S&D center', 'klassy kids store', 'K2 supermarket', 'kiest', 'volttech.co','nummies', 'upright inv']
+#businesses = ['cakeven', 'yummy', 'S&D center', 'klassy kids store', 'K2 supermarket', 'kiest', 'volttech.co','nummies', 'upright inv']
 
 project= Flask(__name__)
 
@@ -27,7 +27,7 @@ mysql = MySQL(project)
 #home page
 @project.route('/')
 def home():
-    return render_template('home.html', businesses=businesses) 
+    return render_template('home.html') 
 
 #layout
 @project.route('/layout')
@@ -172,6 +172,33 @@ def dashboard():
 
      #close connection
     cur.close()   
+
+
+
+
+@project.route('/search')
+@is_logged_in
+def search():
+    #create cursor
+    cur = mysql.connection.cursor()
+
+    #Get tasks
+    result = cur.execute("SELECT * FROM business WHERE catergory = %s",  [catergory])
+
+
+    business = cur.fetchone()
+
+    if result > 0:
+        return render_template('search.html', business=business)
+    else:
+        msg ="Business not Found"    
+        return redirect(url_for('home', msg=msg))
+
+     #close connection
+    cur.close()   
+
+
+
 
 
 
